@@ -19,8 +19,8 @@ func NewWithdrawalHandler(r fiber.Router, withdrawalSvc domain.WithdrawalService
 	handler := &HttpWithdrawalHandler{withdrawalSvc: withdrawalSvc, secretKey: secretKey}
 	
 	r.Post("/create",validation.New[dto.WriteTransactionRequestDto](),handler.CreateWithdrawHandler)
+	r.Get("/", handler.GetAllHandler)
 	r.Get("/:userId",handler.GetByUserIDHandler)
-	r.Get("/all", handler.GetAllHandler)
 }
 
 // CreateWithdrawHandler godoc
@@ -97,7 +97,7 @@ func (h *HttpWithdrawalHandler) GetByUserIDHandler(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Success 200 {array} domain.Withdrawal
-// @Router /withdraw/all [get]
+// @Router /withdraw [get]
 func (h *HttpWithdrawalHandler) GetAllHandler(c *fiber.Ctx) error {
 	withdrawals, err := h.withdrawalSvc.GetAll()
 	if err != nil {

@@ -218,7 +218,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/withdraw/all": {
+        "/withdraw": {
             "get": {
                 "description": "Get all withdrawal transactions in the system",
                 "consumes": [

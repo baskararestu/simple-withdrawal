@@ -224,6 +224,23 @@ paths:
       summary: Create new user
       tags:
       - User
+  /withdraw:
+    get:
+      consumes:
+      - application/json
+      description: Get all withdrawal transactions in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Withdrawal'
+            type: array
+      summary: Get all withdrawal records
+      tags:
+      - Withdrawal
   /withdraw/{userId}:
     get:
       consumes:
@@ -245,23 +262,6 @@ paths:
               $ref: '#/definitions/domain.Withdrawal'
             type: array
       summary: Get withdrawal history
-      tags:
-      - Withdrawal
-  /withdraw/all:
-    get:
-      consumes:
-      - application/json
-      description: Get all withdrawal transactions in the system
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/domain.Withdrawal'
-            type: array
-      summary: Get all withdrawal records
       tags:
       - Withdrawal
   /withdraw/create:
