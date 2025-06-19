@@ -31,12 +31,12 @@ jobs:
 
       - name: Copy project files to EC2
         run: |
-          rsync -avz --delete ./ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/simple-withdraw-api
+          rsync -avz --delete ./ ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/playground-dev/simple-withdraw-api
 
       - name: Deploy on EC2
         run: |
-          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            cd /home/ubuntu/simple-withdraw-api
+          ssh ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            cd /home/playground-dev/simple-withdraw-api
             docker stop simple-app || true && docker rm simple-app || true
             docker build -t simple-app .
             docker run -d --name simple-app --env-file .env -p 6005:6005 simple-app
