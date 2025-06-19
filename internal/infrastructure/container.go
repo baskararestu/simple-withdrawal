@@ -25,14 +25,12 @@ var (
 )
 
 func init (){
-	err := godotenv.Load()
-	if err != nil {
+	_ = godotenv.Load()
+
+	if err := env.Parse(&cfg); err != nil {
 		panic(err)
 	}
 
-	if err = env.Parse(&cfg); err != nil {
-		panic(err)
-	}
 	xlogger.Setup(cfg)
 	xlogger.Logger.Info().Msgf("Config: %+v", cfg)
 	dbSetup()
