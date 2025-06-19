@@ -1,0 +1,236 @@
+basePath: /api
+definitions:
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.Withdrawal:
+    properties:
+      amount:
+        type: number
+      created_at:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.CreateUserRequestDto:
+    properties:
+      amount:
+        type: number
+      name:
+        type: string
+    type: object
+  dto.SignatureRequestExample:
+    properties:
+      body:
+        properties:
+          amount:
+            example: 10000
+            type: integer
+          userId:
+            example: 1
+            type: integer
+        type: object
+      method:
+        example: POST
+        type: string
+      relativePath:
+        example: /api/withdraw/create
+        type: string
+      secretKey:
+        example: dev-secret
+        type: string
+      timestamp:
+        example: "2024-01-01T12:00:00Z"
+        type: string
+    type: object
+  dto.SignatureResponseDto:
+    properties:
+      signature:
+        example: f7321c4c3c99...
+        type: string
+    type: object
+  dto.WriteTransactionRequestDto:
+    properties:
+      amount:
+        type: number
+      userId:
+        type: integer
+    type: object
+host: localhost:6005
+info:
+  contact: {}
+  description: This is a simple withdrawal and inquiry service
+  title: Simple Withdraw API
+  version: "1.0"
+paths:
+  /api/withdraw/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get withdrawal records by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Withdrawal'
+            type: array
+      summary: Get withdrawal history
+      tags:
+      - Withdrawal
+  /tools/signature:
+    post:
+      consumes:
+      - application/json
+      description: Generate SHA-256 signature based on method, relative path, body,
+        and timestamp.
+      parameters:
+      - description: Signature Request Payload (param is request body for protected
+          service)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignatureRequestExample'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SignatureResponseDto'
+      summary: Generate Signature
+      tags:
+      - Tools
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.User'
+            type: array
+      summary: Get all users
+      tags:
+      - User
+  /user/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific user by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+      summary: Get user by ID
+      tags:
+      - User
+  /user/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user and generate initial balance
+      parameters:
+      - description: Create User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create new user
+      tags:
+      - User
+  /withdraw/all:
+    get:
+      consumes:
+      - application/json
+      description: Get all withdrawal transactions in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Withdrawal'
+            type: array
+      summary: Get all withdrawal records
+      tags:
+      - Withdrawal
+  /withdraw/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a withdrawal transaction for a user
+      parameters:
+      - description: Request timestamp
+        in: header
+        name: X-TIMESTAMP
+        required: true
+        type: string
+      - description: Request signature
+        in: header
+        name: X-SIGNATURE
+        required: true
+        type: string
+      - description: Withdrawal Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.WriteTransactionRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: withdrawal successful
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a withdrawal
+      tags:
+      - Withdrawal
+swagger: "2.0"
