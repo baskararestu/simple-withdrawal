@@ -1,6 +1,9 @@
 package infrastructure
 
 import (
+	"log"
+	"simple-withdraw-api/internal/domain"
+
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -25,6 +28,15 @@ func dbSetup() {
 	}
 
 	if err != nil {
-		panic(err)
+		log.Fatal("failed to connect database: ", err)
+	}
+
+	err = db.AutoMigrate(
+		&domain.User{},
+		&domain.Balance{},
+		&domain.Withdrawal{},
+	)
+	if err != nil {
+		log.Fatal("failed to auto migrate: ", err)
 	}
 }
