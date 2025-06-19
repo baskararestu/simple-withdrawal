@@ -32,3 +32,7 @@ func (b *balanceService) GenerateBalanceWithTx(tx *gorm.DB, req dto.GenerateBala
 	}
 	return b.balanceRepo.CreateWithTx(tx, balance)
 }
+
+func (b *balanceService) GetAll() ([]domain.Balance, error) {
+	return b.balanceRepo.FindAll()
+}

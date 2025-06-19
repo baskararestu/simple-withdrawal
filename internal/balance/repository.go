@@ -29,3 +29,10 @@ func (r *balanceRepository) UpdateAmount(userID int, amount float64) error {
 		Where("user_id = ?", userID).
 		Update("amount", amount).Error
 }
+
+func (r *balanceRepository) FindAll() ([]domain.Balance, error) {
+	var balances []domain.Balance
+	err := r.db.Order("created_at DESC").Find(&balances).Error
+	return balances, err
+}
+

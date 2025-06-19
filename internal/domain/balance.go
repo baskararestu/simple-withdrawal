@@ -20,10 +20,12 @@ type BalanceRepository interface {
 	CreateWithTx(tx *gorm.DB, balance Balance) error
 	GetByUserID(userID int) (Balance, error)
 	UpdateAmount(userID int, amount float64) error
+	FindAll() ([]Balance,error)
 }
 
 type BalanceService interface {
 	GenerateBalanceWithTx(tx *gorm.DB, req dto.GenerateBalanceRequestDto) error 	
 	GetByUserID(userID int) (Balance,error)
 	UpdateAmount(userID int, amount float64) error
+	GetAll() ([]Balance,error)
 }

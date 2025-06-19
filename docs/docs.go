@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/withdraw/{userId}": {
+        "/balance/inquiry": {
             "get": {
-                "description": "Get withdrawal records by user ID",
+                "description": "Retrieve all balance records",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,15 +25,16 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Withdrawal"
+                    "Balance"
                 ],
-                "summary": "Get withdrawal history",
+                "summary": "Inquiry All Balances",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
+                        "type": "string",
+                        "example": "dev-secret",
+                        "description": "Secret Key",
+                        "name": "X-SECRET-KEY",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -43,8 +44,48 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.Withdrawal"
+                                "$ref": "#/definitions/domain.Balance"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/balance/inquiry/{userId}": {
+            "get": {
+                "description": "Check user balance by user ID using secret key header",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Balance"
+                ],
+                "summary": "Inquiry Balance by User",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "dev-secret",
+                        "description": "Secret Key",
+                        "name": "X-SECRET-KEY",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Balance"
                         }
                     }
                 }
@@ -251,9 +292,64 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/withdraw/{userId}": {
+            "get": {
+                "description": "Get withdrawal records by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Withdrawal"
+                ],
+                "summary": "Get withdrawal history",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Withdrawal"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "domain.Balance": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.User": {
             "type": "object",
             "properties": {

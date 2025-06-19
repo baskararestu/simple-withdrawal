@@ -75,7 +75,7 @@ func (h *HttpWithdrawalHandler) CreateWithdrawHandler(c *fiber.Ctx) error {
 // @Produce json
 // @Param userId path int true "User ID"
 // @Success 200 {array} domain.Withdrawal
-// @Router /api/withdraw/{userId} [get]
+// @Router /withdraw/{userId} [get]
 func (h *HttpWithdrawalHandler) GetByUserIDHandler(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("userId")
 	if err != nil || userID <= 0 {

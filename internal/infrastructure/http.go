@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"fmt"
 
+	"simple-withdraw-api/internal/balance"
 	"simple-withdraw-api/internal/docs"
 	"simple-withdraw-api/internal/user"
 	"simple-withdraw-api/internal/utilities/tools"
@@ -39,6 +40,7 @@ func Run() {
 	withdrawal.NewWithdrawalHandler(api.Group("/withdraw"), WithdrawalSvc, cfg.SecretKey)
 	user.NewUserHttpHandler(api.Group("/user"), UserSvc)
 	tools.NewToolsHttpHandler(api.Group("/tools"), cfg.SecretKey)
+	balance.NewBalanceHttpHandler(api.Group("/balance"),BalanceSvc, cfg.SecretKey)
 
 
 	logger.Info().Msg("Registered Routes:")

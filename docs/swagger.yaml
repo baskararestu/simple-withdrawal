@@ -1,5 +1,18 @@
 basePath: /api
 definitions:
+  domain.Balance:
+    properties:
+      amount:
+        type: number
+      created_at:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
   domain.User:
     properties:
       created_at:
@@ -75,17 +88,18 @@ info:
   title: Simple Withdraw API
   version: "1.0"
 paths:
-  /api/withdraw/{userId}:
+  /balance/inquiry:
     get:
       consumes:
       - application/json
-      description: Get withdrawal records by user ID
+      description: Retrieve all balance records
       parameters:
-      - description: User ID
-        in: path
-        name: userId
+      - description: Secret Key
+        example: dev-secret
+        in: header
+        name: X-SECRET-KEY
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -93,11 +107,38 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/domain.Withdrawal'
+              $ref: '#/definitions/domain.Balance'
             type: array
-      summary: Get withdrawal history
+      summary: Inquiry All Balances
       tags:
-      - Withdrawal
+      - Balance
+  /balance/inquiry/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Check user balance by user ID using secret key header
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: Secret Key
+        example: dev-secret
+        in: header
+        name: X-SECRET-KEY
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Balance'
+      summary: Inquiry Balance by User
+      tags:
+      - Balance
   /tools/signature:
     post:
       consumes:
@@ -183,6 +224,29 @@ paths:
       summary: Create new user
       tags:
       - User
+  /withdraw/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get withdrawal records by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Withdrawal'
+            type: array
+      summary: Get withdrawal history
+      tags:
+      - Withdrawal
   /withdraw/all:
     get:
       consumes:
